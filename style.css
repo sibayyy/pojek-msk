@@ -1,0 +1,255 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color:gray; /* Warna Biru Sesuai Permintaan */
+    color: white;
+}
+
+/* Navigasi Kanan Atas */
+.navbar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 30px 5%;
+    width: 70%;
+}
+
+.navbar ul {
+    display: flex;
+    list-style: none;
+    gap: 25px;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: white;
+    font-weight: 400;
+    opacity: 0.8;
+    transition: 0.3s;
+    color: white; transition: color 0.3s;
+}
+
+.navbar a:hover {
+    opacity: 1;
+  color: orange;
+}
+
+/* Layout Utama */
+.hero-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 8%;
+}
+
+.container {
+    display: flex;
+    flex-direction: column-reverse; /* Di HP foto di atas teks */
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1200px;
+    gap: 40px;
+}
+
+/* Teks */
+.hero-content {
+    flex: 1;
+    text-align: center;
+}
+
+.intro-text {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    text-transform: lowercase;
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    min-height: 1.2em;
+}
+
+.cursor {
+    /* border-left: 3px solid white; */
+    margin-left: 5px;
+    animation: blink 0.7s infinite;
+}
+
+/* Lingkaran Foto */
+.circle-placeholder {
+    width: 250px;
+    height: 250px;
+    background-color: #e0e0e0;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 6px solid rgba(255, 255, 255, 0.2);
+}
+
+.circle-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Animasi Kursor */
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+/* Tampilan Desktop (Layar Lebar) */
+@media (min-width: 768px) {
+    .container {
+        flex-direction: row; /* Teks kiri, Foto kanan */
+        text-align: left;
+    }
+
+    .hero-content {
+        text-align: left;
+    }
+
+    h1 {
+        font-size: 3.5rem;
+    }
+
+    .circle-placeholder {
+        width: 380px;
+        height: 380px;
+    }
+}
+
+/* Kontainer utama marquee */
+.marquee-container {
+    width: 100%;
+    overflow: hidden; /* Menyembunyikan teks yang keluar batas */
+    background:white;
+    color:black;
+    padding: 20px 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Pengaturan teks dan animasinya */
+.marquee-text {
+    display: inline-block;
+    white-space: nowrap;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    animation: jalan-kiri 20s linear infinite;
+}
+
+/* Efek Berhenti saat Mouse Menempel (Hover) */
+.marquee-container:hover .marquee-text {
+    animation-play-state: paused;
+    cursor: pointer;
+}
+
+/* Definisi Gerakan Animasi */
+@keyframes jalan-kiri {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+/* Container Utama Tentang Saya */
+.about-section {
+    background-color:gray; /* Biru yang sama dengan Hero Section */
+    padding: 80px 10%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.about-container {
+    display: flex;
+    flex-direction: column; /* Mobile first */
+    gap: 50px;
+    max-width: 1100px;
+    margin: 0 auto;
+    align-items: center;
+}
+
+/* Kotak Foto */
+.about-image .image-box {
+    width: 300px;
+    height: 450px;
+    background-color: #D9D9D9; /* Abu-abu sesuai gambar */
+    border-radius: 30px; /* Sudut tumpul */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-box span {
+    position: absolute;
+    color: #333;
+    font-size: 1.5rem;
+    z-index: 0; /* Teks "foto" akan tertutup jika ada gambar */
+}
+
+.about-content {
+    color: white;
+    text-align: left;
+}
+
+.about-content h2 {
+    font-size: 2rem;
+    margin-bottom: 30px;
+    font-weight: 400;
+    text-align: center;
+}
+
+.highlight-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 25px;
+    text-align: justify;
+    background-size: 100% 1.8em;
+}
+
+.description-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    text-align: justify;
+    opacity: 0.9;
+}
+
+@media (min-width: 768px) {
+    .about-container {
+        flex-direction: row; 
+        align-items: flex-start;
+    }
+
+    .about-content {
+        flex: 1;
+    }
+
+    .about-content h2 {
+        text-align: right;
+        margin-right: 150px;
+    }
+
+    .about-image {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+    }
+}
