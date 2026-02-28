@@ -106,6 +106,18 @@
     <audio id="audio" crossorigin="anonymous"></audio>
 
     <script>
+        // DATA KATALOG MUROTTAL
+        const murottalCatalog = [
+            { id: "q1", name: "Al-Fatihah", artist: "Mishary Rashid Alafasy", url: "https://server8.mp3quran.net/afs/001.mp3", isStatic: true },
+            { id: "q2", name: "Al-Baqarah", artist: "Mishary Rashid Alafasy", url: "https://server8.mp3quran.net/afs/002.mp3", isStatic: true },
+            { id: "q3", name: "Ali 'Imran", artist: "Mishary Rashid Alafasy", url: "https://server8.mp3quran.net/afs/003.mp3", isStatic: true },
+            { id: "q4", name: "Ar-Rahman", artist: "Mishary Rashid Alafasy", url: "https://server8.mp3quran.net/afs/055.mp3", isStatic: true },
+            { id: "q5", name: "Al-Mulk", artist: "Mishary Rashid Alafasy", url: "https://server8.mp3quran.net/afs/067.mp3", isStatic: true },
+            { id: "q6", name: "Yasin", artist: "Mishary Rashid Alafasy", url: "https://server8.mp3quran.net/afs/036.mp3", isStatic: true },
+            { id: "q7", name: "Al-Waqi'ah", artist: "Mishary Rashid Alafasy", url: "https://server8.mp3quran.net/afs/056.mp3", isStatic: true },
+            { id: "q8", name: "Al-Kahf", artist: "Mishary Rashid Alafasy", url: "https://server8.mp3quran.net/afs/018.mp3", isStatic: true }
+        ];
+
         // Ambil elemen DOM
         const audio = document.getElementById('audio');
         const playIcon = document.getElementById('playIcon');
@@ -165,10 +177,20 @@
 
             request.onsuccess = (e) => {
                 const allFiles = e.target.result;
-                playlist = allFiles.filter(item => item.category === currentMode).map(item => ({
+                
+                // Filter file dari database berdasarkan kategori
+                const dbFiles = allFiles.filter(item => item.category === currentMode).map(item => ({
                     ...item,
-                    url: URL.createObjectURL(item.blob)
+                    url: URL.createObjectURL(item.blob),
+                    isStatic: false
                 }));
+
+                // Jika mode Murottal, gabungkan katalog statis dengan file database
+                if (currentMode === 'murottal') {
+                    playlist = [...murottalCatalog, ...dbFiles];
+                } else {
+                    playlist = dbFiles;
+                }
                 
                 renderPlaylist();
                 if (playlist.length > 0) loadSong(0, false);
@@ -185,12 +207,21 @@
                 const isActive = index === currentIndex;
                 const div = document.createElement('div');
                 div.className = `group flex items-center justify-between p-3 rounded-2xl cursor-pointer transition text-[11px] ${isActive ? 'bg-white/20 shadow-lg' : 'hover:bg-white/5 text-white/40'}`;
+                
+                // Tombol hapus hanya muncul untuk file yang bukan dari Katalog Statis
+                const deleteBtn = !song.isStatic ? 
+                    `<button onclick="deleteSong(${song.id}, event)" class="p-1 hover:text-red-400 opacity-0 group-hover:opacity-100 transition text-lg leading-none">×</button>` : 
+                    `<span class="text-[8px] opacity-20 italic">Katalog</span>`;
+
                 div.innerHTML = `
                     <div class="flex items-center gap-3 overflow-hidden pointer-events-none">
                         <span class="font-bold opacity-30">${index + 1}</span>
-                        <p class="truncate font-bold tracking-tight">${song.name}</p>
+                        <div class="truncate">
+                            <p class="truncate font-black tracking-tight">${song.name}</p>
+                            ${song.artist ? `<p class="text-[8px] opacity-50">${song.artist}</p>` : ''}
+                        </div>
                     </div>
-                    <button onclick="deleteSong(${song.id}, event)" class="p-1 hover:text-red-400 opacity-0 group-hover:opacity-100 transition text-lg leading-none">×</button>
+                    ${deleteBtn}
                 `;
                 div.onclick = () => loadSong(index, true);
                 playlistContainer.appendChild(div);
@@ -206,7 +237,7 @@
         }
 
         function clearCurrentDB() {
-            if(!confirm(`Hapus SEMUA daftar di mode ${currentMode}?`)) return;
+            if(!confirm(`Hapus SEMUA daftar buatan Anda di mode ${currentMode}? (Katalog tetap ada)`)) return;
             const transaction = db.transaction([STORE_NAME], 'readwrite');
             const store = transaction.objectStore(STORE_NAME);
             store.getAll().onsuccess = (e) => {
@@ -265,7 +296,7 @@
         let audioCtx, analyser, source, dataArray;
         function setupVisualizer() {
             if (audioCtx) return;
-            audioCtx = new AudioContext();
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             analyser = audioCtx.createAnalyser();
             source = audioCtx.createMediaElementSource(audio);
             source.connect(analyser);
